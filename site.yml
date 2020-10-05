@@ -1,0 +1,31 @@
+- name: Host prepared for Ansible connections
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Group 'wheel' is present
+      group:
+        name: wheel
+        state: present
+      become: true
+    - name: Group 'wheel' has passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
+      become: true
+    - name: Ansible user is a member of 'wheel' group
+      user:
+        name: "{{ ansible_user }}"
+        groups: wheel
+        append: yes
+      become: true
+    - name: Prerequisite packages are present
+      apt:
+        name:
+          - python3
+          - python-is-python3
+          - unzip
+        state: present
+      become: true
