@@ -2,6 +2,10 @@
   hosts: all
   gather_facts: false
   tasks:
+    - name: Python 3 is available
+      raw: bash -c "test -e /usr/bin/python3 || (apt -qqy update && apt install -qqy python3)"
+      register: output
+      changed_when: output.stdout != ""
     - name: Group 'wheel' is present
       group:
         name: wheel
