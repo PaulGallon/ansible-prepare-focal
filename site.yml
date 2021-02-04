@@ -25,7 +25,5 @@
       apt:
         name:
           - python3
-          - python-is-python3
-          - unzip
         state: present
       become: true
